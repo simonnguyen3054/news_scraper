@@ -12,6 +12,8 @@ request('https://news.bitcoin.com/', (error, response, body) => {
 
     let articleTitle = $(element).find('a').attr('title');
     let articleLink = $(element).find('a').attr('href');
+    let articleSummary = $(element).siblings('.line-clamp').text();
+    // console.log(articleSummary);
     let imgSrc = $(element).find('img').attr('src');
 
     if (imgSrc === undefined) {
@@ -22,11 +24,11 @@ request('https://news.bitcoin.com/', (error, response, body) => {
       artical: {
         articleTitle: articleTitle,
         articleLink: articleLink,
-        imgSrc: imgSrc
+        imgSrc: imgSrc,
+        articleSummary: articleSummary
       }
     });
 
   });
-  console.log("results", results);
-
+  console.log(results);
 });
