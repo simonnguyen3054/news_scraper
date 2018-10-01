@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 
 app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
 // Database configuration
 // Save the URL of our database as well as the name of our collection
@@ -17,10 +18,6 @@ const db = mongojs(databaseUrl, collections);
 // This makes sure that any errors are logged if mongodb runs into an issue
 db.on('error', error => {
   console.log('Database Error:', error);
-});
-
-app.get('/', function(req, res) {
-  res.send('Hello world');
 });
 
 request('https://news.bitcoin.com/', (error, response, body) => {
@@ -48,7 +45,9 @@ request('https://news.bitcoin.com/', (error, response, body) => {
       imgSrc = $(element)
         .find('span')
         .attr('style');
-      imgSrc = imgSrc.slice(21, imgSrc.length - 1);
+      
+      imgSrc = imgSrc.slice(22, imgSrc.length - 1);
+      console.log(imgSrc);
     }
 
     results.push({
@@ -79,6 +78,18 @@ app.get('/articles', function(req, res) {
       console.log(error);
     } else {
       res.json(found);
+    }
+  });
+});
+
+app.get('/', function(req, res) {
+  db.articles.find({}, function(error, found) {
+    if (error) {
+      console.log(error);
+    } else {
+      res.render('pages/index', {
+        articles: found
+      });
     }
   });
 });
