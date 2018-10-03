@@ -92,12 +92,12 @@ app.get('/articles', function(req, res) {
 app.post('/submit', function(req, res) {
 
   console.log(req.body);
-  db.articles.updateOne(
+  db.articles.update(
     {
       _id: mongojs.ObjectId(req.body._id)
     },
     {
-      $set: {
+      $push: {
         comments: {
           comment: req.body.comment,
           name: req.body.name,
