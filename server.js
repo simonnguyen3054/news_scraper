@@ -54,7 +54,6 @@ request('https://news.bitcoin.com/', (error, response, body) => {
         .attr('style');
 
       imgSrc = imgSrc.slice(22, imgSrc.length - 1);
-      console.log(imgSrc);
     }
 
     results.push({
@@ -63,17 +62,18 @@ request('https://news.bitcoin.com/', (error, response, body) => {
       imgSrc: imgSrc,
       articleSummary: articleSummary
     });
+
   });
 
   results.forEach(articleScraped => {
     db.articles.update(
       { articleLink: articleScraped.articleLink },
-      {
+      { $setOnInsert: {
         articleTitle: articleScraped.articleTitle,
         articleLink: articleScraped.articleLink,
         imgSrc: articleScraped.imgSrc,
         articleSummary: articleScraped.articleSummary
-      },
+      } },
       { upsert: true }
     );
   });
@@ -90,8 +90,6 @@ app.get('/articles', function(req, res) {
 });
 
 app.post('/submit', function(req, res) {
-
-  console.log(req.body);
   db.articles.update(
     {
       _id: mongojs.ObjectId(req.body._id)

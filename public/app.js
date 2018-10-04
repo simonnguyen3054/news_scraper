@@ -33,10 +33,18 @@ function displayComments() {
 
 function formatDate(date) {
   var monthNames = [
-    "January", "February", "March",
-    "April", "May", "June", "July",
-    "August", "September", "October",
-    "November", "December"
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
   ];
 
   var day = date.getDate();
@@ -51,34 +59,40 @@ displayComments();
 // Update comment to article
 $(document).on('click', '.add-comment', function() {
   // Save the selected element
-  let selected = $(this).parents('.card').attr('data-id');
-  let comment = $(this).parent().find('.comment').val();
-  let Username = prompt("What's your fullname?");
+  let selected = $(this)
+    .parents('.card')
+    .attr('data-id');
+  let comment = $(this)
+    .parent()
+    .find('.comment')
+    .val();
 
-  console.log(comment);
-  // Make an AJAX POST request
-  // This uses the data-id of the update button,
-  // which is linked to the specific card
-  // that the user clicked before
+  if (!comment) {
+    alert('Comment is required');
+  } else {
+    let Username = prompt('Your Name is Required. Please enter your name.');
 
-  $.ajax({
-    type: 'POST',
-    url: '/submit',
-    dataType: 'json',
-    data: {
-      _id: selected,
-      comment: comment,
-      name: Username,
-      submitted_on: formatDate(new Date())
-    },
-    // On successful call
-    success: function(data) {
-      // Clear the inputs
-      $('.comment').val('');
-      // Grab the results from the db again, to populate the DOM
-      displayComments();
+    if (Username) {
+      $.ajax({
+        type: 'POST',
+        url: '/submit',
+        dataType: 'json',
+        data: {
+          _id: selected,
+          comment: comment,
+          name: Username,
+          submitted_on: formatDate(new Date())
+        },
+        // On successful call
+        success: function(data) {
+          // Clear the inputs
+          $('.comment').val('');
+          // Grab the results from the db again, to populate the DOM
+          displayComments();
+        }
+      }).then(function(data) {
+        console.log(data);
+      });
     }
-  }).then(function(data) {
-    console.log(data);
-  });
+  }
 });
